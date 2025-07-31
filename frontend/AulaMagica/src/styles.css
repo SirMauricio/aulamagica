@@ -1,0 +1,9 @@
+body {
+  background-image: url('./fondo.jpg');
+  background-size: cover;
+  background-position: center center; /* Asegura que la imagen se centre correctamente */
+  min-height: 200px;
+  background-attachment: fixed; /* Asegura que el fondo no se mueva con el scroll */
+  overflow-x: hidden; /* Evita desplazamiento horizontal */
+}
+

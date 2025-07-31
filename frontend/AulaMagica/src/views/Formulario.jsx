@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "../viewsEstilos/Formulario.css"; // Ajusta la ruta según tu estructura
+import "../viewsEstilos/Formulario.css";
 
 const campos = [
     "modalidadNombre",
@@ -18,8 +18,8 @@ export default function Formulario() {
     const [resultadoNLP, setResultadoNLP] = useState(null);
     const [criterios, setCriterios] = useState(
     campos.reduce((acc, campo) => ({ ...acc, [campo]: "" }), {})
-);
-const [resultadoCriterios, setResultadoCriterios] = useState(null);
+    );
+    const [resultadoCriterios, setResultadoCriterios] = useState(null);
 
 const manejarCambioCriterio = (e) => {
     const { name, value } = e.target;
@@ -28,7 +28,7 @@ const manejarCambioCriterio = (e) => {
 
 const consultarNLP = async () => {
     if (!textoLibre.trim()) {
-        alert("Ingresa texto libre");
+        alert("Por favor, ingresa texto.");
         return;
     }
     try {
@@ -36,18 +36,18 @@ const consultarNLP = async () => {
         setResultadoNLP(res.data);
     } catch (error) {
         console.error(error);
-        alert("Error al consultar modelo NLP");
+        alert("Ocurrió un error al consultar NLP.");
     }
-};
+    };
 
 const consultarCriterios = async (e) => {
     e.preventDefault();
 
     for (const campo of campos) {
         if (!criterios[campo]) {
-        alert(`Completa el campo ${campo}`);
+        alert(`Falta completar el campo: ${campo}`);
         return;
-        }
+    }
     }
 
     try {
@@ -55,55 +55,60 @@ const consultarCriterios = async (e) => {
         setResultadoCriterios(res.data);
     } catch (error) {
         console.error(error);
-        alert("Error al consultar modelo por criterios");
+        alert("Error al consultar por criterios.");
     }
-    };
+};
 
 return (
-    <div className="container">
-        <h2>Recomendación con texto libre (NLP)</h2>
+    <div className="formulario-container">
+        <section className="section">
+        <h2 className="section-title">Recomendación por Texto Libre (IA)</h2>
         <textarea
-        className="textareaInput"
-        value={textoLibre}
-        onChange={(e) => setTextoLibre(e.target.value)}
-        placeholder="Escribe tu texto aquí"
+            className="textarea"
+            value={textoLibre}
+            onChange={(e) => setTextoLibre(e.target.value)}
+            placeholder="Describe una situación o necesidad educativa..."
+            aria-label="Texto libre"
         />
-        <button className="button" onClick={consultarNLP}>Consultar NLP</button>
+        <button className="btn" onClick={consultarNLP}>Consultar con IA</button>
 
         {resultadoNLP && (
-        <div className="resultBox">
-            <h3>Resultados NLP:</h3>
+            <div className="result">
+            <h3>Resultado:</h3>
             <pre>{JSON.stringify(resultadoNLP, null, 2)}</pre>
-        </div>
+            </div>
         )}
+        </section>
 
-        <hr className="hrSeparator" />
+        <hr className="divider" />
 
-        <h2>Recomendación por criterios seleccionados</h2>
-        <form onSubmit={consultarCriterios}>
-        {campos.map((campo) => (
-            <div className="formGroup" key={campo}>
-            <label className="label" htmlFor={campo}>{campo}:</label>
-            <input
-                className="inputText"
+        <section className="section">
+        <h2 className="section-title">Recomendación por Criterios Manuales</h2>
+        <form className="form" onSubmit={consultarCriterios}>
+            {campos.map((campo) => (
+            <div className="form-group" key={campo}>
+                <label htmlFor={campo} className="label">{campo}:</label>
+                <input
                 type="text"
                 id={campo}
                 name={campo}
                 value={criterios[campo]}
                 onChange={manejarCambioCriterio}
+                className="input"
                 required
-            />
+                />
             </div>
-        ))}
-        <button className="button" type="submit">Consultar criterios</button>
+            ))}
+            <button type="submit" className="btn">Consultar por Criterios</button>
         </form>
 
         {resultadoCriterios && (
-        <div style={{ marginTop: 20 }}>
-            <h3>Actividad recomendada:</h3>
+            <div className="result">
+            <h3>Actividad Recomendada:</h3>
             <p>{resultadoCriterios.actividad_predicha}</p>
-        </div>
+            </div>
         )}
+        </section>
     </div>
     );
 }

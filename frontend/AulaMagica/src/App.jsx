@@ -2,12 +2,11 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ProtectedRoute, ProtectedRouteLogin, ProtectedAdmin } from "./ProtectedRoute";
 import { AuthProvider } from "./AuthContext";
-import Header from "./componentes/header";
-import Footer from "./componentes/footer";
-import Login from "./componentes/login";
-import Formulario from "./componentes/Formulario";
-import Dashboard from "./componentes/Dashboard";
-import PrivacyPolicy from "./componentes/infoPoliticas";
+import Header from "./views/header";
+import Footer from "./views/footer";
+import Login from "./views/login";
+import Formulario from "./views/formulario";
+
 
 
 function App() {
@@ -32,12 +31,6 @@ function App() {
                         {/* Agrega aquí más rutas protegidas */}
                     </Route>
 
-                    {/* Admin */}
-                    <Route element={<ProtectedAdmin />}>
-                        <Route path="/dashboard" element={<Dashboard />} />
-                    </Route>
-
-                    <Route path="/privacidad" element={<PrivacyPolicy />} />
 
                 </Routes>
                 <Footer />

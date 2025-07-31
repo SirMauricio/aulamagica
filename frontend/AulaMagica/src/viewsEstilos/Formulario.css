@@ -1,42 +1,61 @@
-.container {
-max-width: 600px;
+.formulario-container {
+max-width: 800px;
 margin: auto;
-padding: 20px;
+padding: 2rem;
+background: #fff;
+border-radius: 12px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.textareaInput {
+.section {
+margin-bottom: 2rem;
+}
+
+.section-title {
+font-size: 1.5rem;
+margin-bottom: 1rem;
+}
+
+.textarea {
 width: 100%;
-height: 80px;
-margin-bottom: 10px;
+height: 100px;
+padding: 1rem;
+font-size: 1rem;
+border-radius: 8px;
+border: 1px solid #ccc;
+margin-bottom: 1rem;
 }
 
-.button {
-margin-top: 10px;
-}
-
-.resultBox {
-background: #f0f0f0;
-padding: 10px;
-margin-top: 10px;
-}
-
-.formGroup {
-margin-bottom: 10px;
-}
-
-.label {
-display: block;
-font-weight: bold;
-margin-bottom: 4px;
-}
-
-.inputText {
+.input {
 width: 100%;
-max-width: 400px;
-padding: 6px 8px;
-box-sizing: border-box;
+padding: 0.75rem;
+border-radius: 6px;
+border: 1px solid #ccc;
 }
 
-.hrSeparator {
-margin: 40px 0;
+.btn {
+margin-top: 1rem;
+padding: 0.75rem 1.5rem;
+background-color: #0056b3;
+color: white;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+}
+
+.btn:hover {
+background-color: #003f7f;
+}
+
+.result {
+margin-top: 1rem;
+background: #f5f5f5;
+padding: 1rem;
+border-radius: 8px;
+}
+
+.divider {
+margin: 2rem 0;
+border: none;
+border-top: 1px solid #ddd;
 }

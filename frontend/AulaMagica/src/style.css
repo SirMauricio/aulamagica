@@ -1,0 +1,40 @@
+/* Aseguramos que el cuerpo ocupe todo el alto de la pantalla y que el contenido no se sobreponga */
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+/* Contenedor principal de la app */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Esto asegura que el contenido ocupe todo el alto de la pantalla */
+}
+
+/* Contenedor del Dashboard */
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Esto asegura que el contenido del dashboard se expanda para llenar el espacio restante */
+}
+
+/* Ajustes para el footer */
+footer {
+  background-color: #2d572c; /* Fondo verde oscuro */
+  color: #f0f2f5; /* Color claro para el texto */
+  text-align: center;
+  padding: 20px 10px; /* Espaciado en el footer */
+  width: 100%;
+  position: relative; /* Posición relativa para que el footer se mantenga en el flujo del contenido */
+  margin-top: 20px; /* Separación entre el contenido y el footer */
+}
+
+/* Asegurar que los enlaces del footer se vean bien */
+footer a {
+  color: #f0f2f5; /* Enlaces de color claro */
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline; /* Subrayar los enlaces al pasar el mouse */
+}
