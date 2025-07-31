@@ -10,7 +10,7 @@ router.post("/recomendar-actividad", (req, res) => {
     }
 
   // Ejecutar script python con el texto
-const pythonProcess = spawn("python", ["./ia/predict.py", texto]);
+const pythonProcess = spawn("python", ["./services/predict.py", texto]);
 
 let dataString = "";
 pythonProcess.stdout.on("data", (data) => {

@@ -20,7 +20,7 @@ for (const key of keys) {
   // Ejecutar script python con el input JSON stringificado
 const pythonProcess = spawn(
     "python",
-    ["./ia/predict_criterios.py", JSON.stringify(input)]
+    ["./services/predict_criterios.py", JSON.stringify(input)]
 );
 
 let dataString = "";
