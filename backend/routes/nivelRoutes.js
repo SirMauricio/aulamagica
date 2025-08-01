@@ -5,7 +5,7 @@ const pool = require("../database");
 
 router.get("/", async (req, res) => {
 try {
-    const [rows] = await pool.query("SELECT nivelNombre FROM NIVEL_ACADEMICO");
+    const [rows] = await pool.query("SELECT nivelNombre FROM NIVEL_EDUCATIVO");
     res.json(rows.map(r => r.nivelNombre));
 } catch (error) {
     console.error(error);

@@ -5,8 +5,8 @@ const cors = require('cors');
 const formularioRoutes = require('./routes/formularioRoutes');
 const Admin = require('./routes/usersRouters');
 const login = require('./routes/loginRouters');
-const recomendacionesRouter = require("./routes/recomendaciones");
-const recomendacionesCriteriosRouter = require("./routes/recomendacionesCriterios");
+const iaRoutes = require("./routes/iaRoutes"); //Llamada al microservicio FAST APi
+const recomendacionesCriteriosRouter = require("./routes/api_predict");
 const modalidadesRouter = require("./routes/modalidadRoutes");
 const nivelRouter = require("./routes/nivelRoutes");
 const gradoRouter = require("./routes/gradoRoutes");
@@ -15,6 +15,8 @@ const materialesRouter = require("./routes/materialesRoutes");
 const complejidadRouter = require("./routes/complejidadRoutes");
 const objetivoRouter = require("./routes/objetivoRoutes");
 const duracionRouter = require("./routes/duracionRoutes");
+
+
 
 
 const app = express();
@@ -35,7 +37,7 @@ app.use(express.json());
 app.use('/formulario', formularioRoutes);
 app.use('/login', login);
 app.use('/users', Admin);
-app.use("/api", recomendacionesRouter);
+app.use("/api/ia", iaRoutes);
 app.use("/api", recomendacionesCriteriosRouter);
 app.use("/api/modalidades", modalidadesRouter);
 app.use("/api/nivel", nivelRouter);
