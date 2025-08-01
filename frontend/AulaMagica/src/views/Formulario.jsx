@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import ListaActividades from "./ListaActividades";
 
 const campos = [
 { name: "modalidadNombre", label: "Modalidad", endpoint: "/api/modalidades" },
@@ -19,7 +20,8 @@ const [criterios, setCriterios] = useState(
 const [opciones, setOpciones] = useState(
     campos.reduce((acc, campo) => ({ ...acc, [campo.name]: [] }), {})
 );
-const [resultadoCriterios, setResultadoCriterios] = useState(null);
+const [resultadoCriterios, setResultadoCriterios] = useState([]);
+
 
 const [textoLibre, setTextoLibre] = useState("");
 const [resultadoNLP, setResultadoNLP] = useState(null);
@@ -62,12 +64,13 @@ const consultarCriterios = async (e) => {
 
     console.log("📤 Enviando datos al backend:", datosTransformados);  // <-- Aquí imprimes los datos
 
-    try {
-        const res = await axios.post("http://localhost:5000/api/ia/predict", datosTransformados);
-        setResultadoCriterios(res.data.actividad_sugerida);
-    } catch (error) {
-        alert("Error al consultar actividad por criterios.");
-    }
+try {
+    const res = await axios.post("http://localhost:5000/api/ia/predict", datosTransformados);
+    setResultadoCriterios(res.data.actividades_sugeridas || []);
+} catch (error) {
+    alert("Error al consultar actividad por criterios.");
+}
+
 };
 
   // Llamar backend para modelo NLP
@@ -117,12 +120,13 @@ const consultarCriterios = async (e) => {
             <button type="submit" className="btn">Consultar por Criterios</button>
         </form>
 
-        {resultadoCriterios && (
-            <div className="result" style={{ marginTop: "1rem" }}>
-            <h3>Actividad Recomendada:</h3>
-            <p>{resultadoCriterios}</p>
-            </div>
-        )}
+        {resultadoCriterios.length > 0 && (
+    <section style={{ marginTop: "1rem" }}>
+    <h3>Actividades recomendadas:</h3>
+    <ListaActividades actividades={resultadoCriterios} />
+    </section>
+)}
+
         </section>
 
         <hr className="divider" />

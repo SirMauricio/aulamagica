@@ -29,7 +29,7 @@ const Header = () => {
                         alt="Logo de FormularioWEB"
                         className="logo w-12 h-12"
                     />
-                    <h1 className="header-title">FormularioWEB</h1>
+                    <h1 className="header-title">Aula Mágica</h1>
                 </div>
             </div>
 

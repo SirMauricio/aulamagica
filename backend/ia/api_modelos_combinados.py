@@ -25,10 +25,18 @@ bd = os.getenv("DB_NAME")
 engine = create_engine(f"mysql+pymysql://{usuario}:{contrasena}@{host}:{puerto}/{bd}")
 
 query = """
-SELECT A.nombreActividad, A.tema, A.descripcion, 
-        M.modalidadNombre, N.nivelNombre, G.gradoNombre, 
-        E.nombreEspacio, MAT.materialCategoria, COM.complejoNombre,
-        OB.nombreObjetivo, DU.duracion
+SELECT 
+    A.nombreActividad,
+    A.tema,
+    A.descripcion,
+    MIN(M.modalidadNombre) AS modalidadNombre,
+    MIN(N.nivelNombre) AS nivelNombre,
+    MIN(G.gradoNombre) AS gradoNombre,
+    MIN(E.nombreEspacio) AS nombreEspacio,
+    MIN(MAT.materialCategoria) AS materialCategoria,
+    MIN(COM.complejoNombre) AS complejoNombre,
+    MIN(OB.nombreObjetivo) AS nombreObjetivo,
+    MIN(DU.duracion) AS duracion
 FROM ACTIVIDADES A
 LEFT JOIN ACTIVIDAD_MODALIDAD AM ON A.actId = AM.actId
 LEFT JOIN MODALIDADES M ON AM.modId = M.modId
@@ -44,11 +52,13 @@ LEFT JOIN COMPLEJIDAD COM ON ACOM.complejoId = COM.complejoId
 LEFT JOIN ACTIVIDAD_OBJETIVO AOB ON A.actId = AOB.actId
 LEFT JOIN OBJETIVO OB ON AOB.objetivoId = OB.objetivoId
 LEFT JOIN ACTIVIDAD_DURACION ADU ON A.actId = ADU.actId
-LEFT JOIN DURACION DU ON ADU.duracionId = DU.duracion
-ORDER BY A.nombreActividad
+LEFT JOIN DURACION DU ON ADU.duracionId = DU.duracionId
+GROUP BY 
+    A.nombreActividad, A.tema, A.descripcion
 """
 
 df = pd.read_sql(query, engine)
+df = df.drop_duplicates(subset="nombreActividad", keep="first")
 
 # Directorio de salida
 output_path = os.path.join(os.getcwd(), "modelos")
