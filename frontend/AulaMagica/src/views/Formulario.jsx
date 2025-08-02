@@ -3,14 +3,14 @@ import axios from "axios";
 import ListaActividades from "./ListaActividades";
 
 const campos = [
-{ name: "modalidadNombre", label: "Modalidad", endpoint: "/api/modalidades" },
-{ name: "nivelNombre", label: "Nivel", endpoint: "/api/nivel" },
-{ name: "gradoNombre", label: "Grado", endpoint: "/api/grado" },
-{ name: "nombreEspacio", label: "Espacio Educativo", endpoint: "/api/espacio" },
-{ name: "materialCategoria", label: "Categoría de Material", endpoint: "/api/materiales" },
-{ name: "complejoNombre", label: "Complejo", endpoint: "/api/complejidades" },
-{ name: "nombreObjetivo", label: "Objetivo", endpoint: "/api/objetivos" },
-{ name: "duracion", label: "Duración (horas)", endpoint: "/api/duracion" },
+// { name: "modalidadNombre", label: "Modalidad", endpoint: "/api/modalidades" },
+{ name: "nivel", label: "Nivel", endpoint: "/api/nivel" },
+{ name: "grado", label: "Grado", endpoint: "/api/grado" },
+{ name: "complejidad",  label: "Complejo", endpoint: "/api/complejidades" },
+{ name: "espacio",label: "Espacio Educativo", endpoint: "/api/espacio" },
+{ name: "materiales", label: "Categoría de Material", endpoint: "/api/materiales" },
+{ name: "objetivo", label: "Objetivo", endpoint: "/api/objetivos" },
+{ name: "duracion", label: "Duración (minutos)", endpoint: "/api/duracion" },
 ];
 
 export default function FormularioIA() {
@@ -62,7 +62,7 @@ const consultarCriterios = async (e) => {
         duracion: parseInt(criterios.duracion, 10),
     };
 
-    console.log("📤 Enviando datos al backend:", datosTransformados);  // <-- Aquí imprimes los datos
+    console.log(" Enviando datos al backend:", datosTransformados);  // <-- Aquí imprimes los datos
 
 try {
     const res = await axios.post("http://localhost:5000/api/ia/predict", datosTransformados);

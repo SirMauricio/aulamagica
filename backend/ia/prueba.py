@@ -51,7 +51,7 @@ entrada = {
     'materialCategoria': 'Ninguno',
     'complejoNombre': 'Fácil',
     'nombreObjetivo': 'Integración',
-    'duracion': 15
+    'duracion': 15 
 }
 
 try:

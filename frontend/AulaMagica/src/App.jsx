@@ -1,13 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ProtectedRoute, ProtectedRouteLogin, ProtectedAdmin } from "./ProtectedRoute";
 import { AuthProvider } from "./AuthContext";
 import Header from "./views/header";
 import Footer from "./views/footer";
 import Login from "./views/login";
 import Formulario from "./views/formulario";
-
-
 
 function App() {
     return (
@@ -15,23 +12,14 @@ function App() {
             <Router>
                 <Header />
                 <Routes>
-                    {/* Redirige desde / al login si no está logueado */}
-                    <Route path="/" element={<ProtectedRouteLogin />}>
-                        <Route index element={<Login />} />
-                    </Route>
+                    {/* Página principal redirige al login */}
+                    <Route path="/" element={<Login />} />
 
                     {/* Página de login */}
-                    <Route path="/login" element={<ProtectedRouteLogin />}>
-                        <Route index element={<Login />} />
-                    </Route>
+                    <Route path="/login" element={<Login />} />
 
-                    {/* Rutas protegidas */}
-                    <Route element={<ProtectedRoute />}>
-                        <Route path="/formulario" element={<Formulario />} />
-                        {/* Agrega aquí más rutas protegidas */}
-                    </Route>
-
-
+                    {/* Página de formulario (ya no protegida) */}
+                    <Route path="/formulario" element={<Formulario />} />
                 </Routes>
                 <Footer />
             </Router>
