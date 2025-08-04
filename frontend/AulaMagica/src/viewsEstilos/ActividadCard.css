@@ -1,0 +1,38 @@
+.actividad-card {
+    background-color: #fffaf3;
+    border: 2px solid #ffa94d;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px;
+    box-shadow: 0 4px 8px rgba(255, 165, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.actividad-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(255, 140, 0, 0.25);
+}
+
+.actividad-card h3 {
+    color: #e85d04;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.actividad-card p {
+    margin: 6px 0;
+    color: #333;
+    font-size: 0.95em;
+}
+
+.actividad-card strong {
+    color: #f48c06;
+}
+
+.actividad-card .descripcion {
+    max-height: 100px;      
+    overflow: hidden;       
+    text-overflow: ellipsis; 
+    white-space: pre-wrap;   
+}

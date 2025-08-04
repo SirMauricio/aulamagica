@@ -13,15 +13,19 @@ app = FastAPI()
 ruta_base = os.path.dirname(__file__)
 ruta_modelos = os.path.join(ruta_base, "modelos")
 
+# Carga modelos y vectorizador NLP entrenados
 modelo_pred = joblib.load(os.path.join(ruta_modelos, "modelo_prediccion.pkl"))
 le_actividad = joblib.load(os.path.join(ruta_modelos, "label_encoder_nombreActividad.pkl"))
+modelo_nlp = joblib.load(os.path.join(ruta_modelos, "modelo_nlp.pkl"))
+vectorizer_nlp = joblib.load(os.path.join(ruta_modelos, "vectorizer_nlp.pkl"))
 
+# Ajusta campos según etiquetas usadas en entrenamiento
 campos_etiquetas = [
-    "modalidadNombre", "nivelNombre", "gradoNombre",
-    "nombreEspacio", "materialCategoria", "complejoNombre",
-    "nombreObjetivo", "duracion"
+    "nivel", "grado", "complejidad", "espacio",
+    "materiales", "objetivo", "duracion", "modalidadNombre"
 ]
 
+# Carga los encoders
 encoders = {}
 for campo in campos_etiquetas:
     if campo == "duracion":
@@ -38,18 +42,22 @@ DB_NAME = os.getenv("DB_NAME")
 engine = create_engine(f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
 class DatosEstructurados(BaseModel):
-    modalidadNombre: str
-    nivelNombre: str
-    gradoNombre: str
-    nombreEspacio: str
-    materialCategoria: str
-    complejoNombre: str
-    nombreObjetivo: str
+    nivel: str
+    grado: str
+    complejidad: str
+    espacio: str
+    materiales: str
+    objetivo: str
     duracion: int
+    modalidadNombre: str
+
+class TextoLibre(BaseModel):
+    texto: str
+
 
 @app.post("/predict")
 def predecir_actividad(datos: DatosEstructurados, usar_categoria_desconocida: bool = True):
-    print("📥 Datos recibidos:", datos.dict())
+    print(" Datos recibidos:", datos.dict())
     try:
         X_input = []
         for campo in campos_etiquetas:
@@ -63,56 +71,54 @@ def predecir_actividad(datos: DatosEstructurados, usar_categoria_desconocida: bo
                     valor_codificado = le.transform([val_str])[0]
                 else:
                     if usar_categoria_desconocida:
-                        valor_codificado = 0  # índice para categoría "desconocida"
+                        valor_codificado = 0
                         print(f"⚠️ Etiqueta desconocida para '{campo}': '{val_str}', usando categoría 0")
                     else:
                         raise HTTPException(status_code=400, detail=f"Etiqueta desconocida para '{campo}': '{val_str}'")
             X_input.append(valor_codificado)
 
         import pandas as pd
-        # Convertir a DataFrame con columnas para evitar warning
         X_df = pd.DataFrame([X_input], columns=campos_etiquetas)
-        y_pred = modelo_pred.predict(X_df)
-        actividades_pred = le_actividad.inverse_transform(y_pred)
 
-        placeholders = ",".join(["%s"] * len(actividades_pred))
-        query = text(f"""
-            SELECT A.nombreActividad, A.tema, A.descripcion, 
-            M.modalidadNombre, N.nivelNombre, G.gradoNombre, 
-            E.nombreEspacio, MAT.materialCategoria, COM.complejoNombre,
-            OB.nombreObjetivo, DU.duracion
-            FROM ACTIVIDADES A
-            LEFT JOIN ACTIVIDAD_MODALIDAD AM ON A.actId = AM.actId
-            LEFT JOIN MODALIDADES M ON AM.modId = M.modId
-            LEFT JOIN ACTIVIDAD_NIVEL_GRADO ANG ON A.actId = ANG.actId
-            LEFT JOIN NIVEL_EDUCATIVO N ON ANG.nivelId = N.nivelId
-            LEFT JOIN GRADO_EDUCATIVO G ON ANG.gradoId = G.gradoId
-            LEFT JOIN ACTIVIDAD_ESPACIO AE ON A.actId = AE.actId
-            LEFT JOIN ESPACIO E ON AE.espacioId = E.espacioId
-            LEFT JOIN ACTIVIDAD_MATERIALES AMAT ON A.actId = AMAT.actId
-            LEFT JOIN USO_MATERIALES MAT ON AMAT.materialId = MAT.materialId
-            LEFT JOIN ACTIVIDAD_COMPLEJIDAD ACOM ON A.actId = ACOM.actId
-            LEFT JOIN COMPLEJIDAD COM ON ACOM.complejoId = COM.complejoId
-            LEFT JOIN ACTIVIDAD_OBJETIVO AOB ON A.actId = AOB.actId
-            LEFT JOIN OBJETIVO OB ON AOB.objetivoId = OB.objetivoId
-            LEFT JOIN ACTIVIDAD_DURACION ADU ON A.actId = ADU.actId
-            LEFT JOIN DURACION DU ON ADU.duracionId = DU.duracion
-            WHERE A.nombreActividad IN :nombres
-            ORDER BY A.nombreActividad
-            LIMIT 6
-        """).bindparams(bindparam("nombres", expanding=True))
-        
+        # Obtener top 6 actividades por probabilidad
+        probas = modelo_pred.predict_proba(X_df)[0]
+        top_indices = np.argsort(probas)[::-1][:6]
+        actividades_pred = le_actividad.inverse_transform(top_indices)
+
+        actividades_unicas = list(dict.fromkeys(actividades_pred))
+
+        # Consulta SQL (ajusta el nombre de tabla y columnas si cambiaste)
+        query = text("""
+    SELECT 
+        nombreActividad,
+        descripcion AS descripcion,
+        nivel AS nivel,
+        grado AS grado,
+        complejidad AS complejidad,
+        espacio AS espacio,
+        materiales AS materiales,
+        objetivo AS objetivo,
+        tema AS tema,
+        duracion AS duracion,
+        modalidadNombre AS modalidadNombre
+    FROM ACTIVIDADES_EDUCATIVAS
+    WHERE nombreActividad IN :nombres
+    GROUP BY nombreActividad, nivel, grado, complejidad, espacio, materiales, objetivo, duracion, tema, descripcion
+    ORDER BY nombreActividad
+""").bindparams(bindparam("nombres", expanding=True))
+
+
         with engine.connect() as conn:
-            result = conn.execute(query, {"nombres": actividades_pred.tolist()})
+            result = conn.execute(query, {"nombres": actividades_unicas})
             actividades_info = [dict(row._mapping) for row in result]
 
-        print(f"✅ Predicción con info completa (hasta 6): {actividades_info}")
+        print(f"Predicción con info completa (hasta 6): {actividades_info}")
         return {"actividades_sugeridas": actividades_info}
 
     except HTTPException as he:
         raise he
     except Exception as e:
-        print("❌ Error inesperado:", str(e))
+        print("Error inesperado:", str(e))
         raise HTTPException(status_code=400, detail=f"Error en predicción: {str(e)}")
 
 

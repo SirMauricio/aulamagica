@@ -1,0 +1,90 @@
+.lista-actividades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.actividad-card {
+  background: #fff3e0; /* naranja suave */
+  border: 2px solid #f28500; /* naranja fuerte */
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(242, 133, 0, 0.15);
+  padding: 1.25rem 1.5rem;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.actividad-card:hover {
+  box-shadow: 0 8px 20px rgba(242, 133, 0, 0.4);
+}
+
+.actividad-card h3 {
+  color: #e65100;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+.actividad-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+}
+
+.actividad-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  color: #5d4037;
+}
+
+.actividad-info p strong {
+  color: #bf360c;
+}
+
+.descripcion {
+  grid-column: 1 / -1;
+  font-size: 0.95rem;
+  color: #4e342e;
+  margin-bottom: 0.75rem;
+  text-align: justify;
+
+  /* Asegurarte de eliminar o comentar: */
+  /* max-height, overflow, text-overflow, line-clamp, etc */
+}
+
+/* Para descripciones o textos largos ocupar toda la fila */
+.actividad-info p.descripcion {
+  grid-column: 1 / -1;
+  font-size: 0.95rem;
+  color: #4e342e;
+  margin-bottom: 0.75rem;
+  text-align: justify;
+
+  /* Quitar estas reglas para que no corte el texto */
+  /* max-height: 4.5rem;
+  overflow: hidden; */
+}
+
+.btn-ver-mas {
+  background: none;
+  border: none;
+  color: #f28500;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0;
+  margin-left: 0.3rem;
+  text-decoration: underline;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.btn-ver-mas:hover {
+  color: #e65100;
+}
